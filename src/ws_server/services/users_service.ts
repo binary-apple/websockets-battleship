@@ -12,17 +12,20 @@ export class UsersService {
     return UsersService.instance;
   }
 
-  addUser(login: string, password: string): User {
+  private addUser(login: string, password: string): User {
     const newUser: User = { id: randomUUID(), login, password };
     this.users.push(newUser);
     return newUser;
   }
 
-  getUserById(id: string): User | undefined {
+  public getUserById(id: string): User | undefined {
     return this.users.find((user) => user.id === id);
   }
 
-  getUserByLoginAndPassword(login: string, password: string): User | undefined {
+  public getUserByLoginAndPassword(
+    login: string,
+    password: string,
+  ): User | undefined {
     const user = this.users.find((user) => user.login === login);
     if (!user) {
       return this.addUser(login, password);
