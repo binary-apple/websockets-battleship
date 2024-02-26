@@ -3,12 +3,18 @@ import { WebSocket, WebSocketServer } from 'ws';
 import { CommandsHandler } from './commands_handler';
 import { Reg } from './commands/reg';
 import { WssResponse } from './types';
+import { ConnectionService } from './services/connection_service';
+import { CreateRoom } from './commands/create_room';
+import { UpdateRoom } from './commands/update_room';
 
 export const wss = (port = 3000) => {
   // const clients = new Map();
   const wss = new WebSocketServer({ port });
 
   CommandsHandler.registerCommand('reg', new Reg());
+  CommandsHandler.registerCommand('create_room', new CreateRoom());
+  CommandsHandler.registerCommand('update_room', new UpdateRoom());
+  const connectionService = ConnectionService.getInstance();
 
   wss.on('connection', function connection(ws: WebSocket) {
     console.log(`New connection to ws://localhost:${port}`);
@@ -24,7 +30,9 @@ export const wss = (port = 3000) => {
 
     ws.on('close', function close() {
       console.log('Client disconnected');
-      // clients.delete(clientId);
+      if (connectionService.getUserByConnection(ws)) {
+        connectionService.deleteConnection(ws);
+      }
     });
   });
 

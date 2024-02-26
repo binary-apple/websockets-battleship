@@ -2,9 +2,11 @@ import { WebSocket } from 'ws';
 import { WSCommand } from './abstract_command';
 import { User, WssResponse } from '../types';
 import { UsersService } from '../services/users_service';
+import { ConnectionService } from '../services/connection_service';
+import { UpdateRoom } from './update_room';
 
 interface RegInData {
-  login: string;
+  name: string;
   password: string;
 }
 
@@ -18,9 +20,10 @@ interface RegOutData {
 export class Reg implements WSCommand {
   name = 'reg';
   usersService = UsersService.getInstance();
+  connectionService = ConnectionService.getInstance();
+  updateRoomCommand = new UpdateRoom();
 
   execute(ws: WebSocket, data: string): void {
-    console.log(`reg execution with data: ${data}`);
     let resData: RegOutData = {
       name: this.name,
       index: '',
@@ -38,7 +41,7 @@ export class Reg implements WSCommand {
     }
     const parsedData: RegInData = JSON.parse(data) as RegInData;
     const user: User | undefined = this.usersService.getUserByLoginAndPassword(
-      parsedData.login,
+      parsedData.name,
       parsedData.password,
     );
 
@@ -60,6 +63,10 @@ export class Reg implements WSCommand {
     };
 
     ws.send(JSON.stringify(res));
+    this.connectionService.setUserByConnection(ws, user);
+    this.connectionService.executeForAllConnections((ws: WebSocket) => {
+      this.updateRoomCommand.execute(ws);
+    });
     return;
   }
 

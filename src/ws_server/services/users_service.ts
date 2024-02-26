@@ -13,7 +13,7 @@ export class UsersService {
   }
 
   private addUser(login: string, password: string): User {
-    const newUser: User = { id: randomUUID(), login, password };
+    const newUser: User = { id: randomUUID(), name: login, password };
     this.users.push(newUser);
     return newUser;
   }
@@ -26,7 +26,7 @@ export class UsersService {
     login: string,
     password: string,
   ): User | undefined {
-    const user = this.users.find((user) => user.login === login);
+    const user = this.users.find((user) => user.name === login);
     if (!user) {
       return this.addUser(login, password);
     } else {

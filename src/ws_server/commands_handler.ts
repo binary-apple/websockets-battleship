@@ -14,9 +14,9 @@ export class CommandsHandler {
     commandData: string,
   ) {
     if (!this.commandRegistry.has(commandName)) {
-      throw new Error(`Command ${commandName} is not implemented.`);
+      console.log(`Command ${commandName} is not implemented.`);
+      return;
     }
-    console.log(commandData);
     return this.commandRegistry.get(commandName).execute(ws, commandData);
   }
 }
