@@ -27,6 +27,9 @@ export class RoomsService {
     if (!room || room.player2Id) {
       return;
     }
+    if (room.player1Id === userId) {
+      return;
+    }
     room.player2Id = userId;
     this.rooms = this.rooms.filter((room) => room.id !== roomId);
     return room;

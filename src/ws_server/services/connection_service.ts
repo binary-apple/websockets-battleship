@@ -16,6 +16,16 @@ export class ConnectionService {
     return this.wsToUserId.get(ws);
   }
 
+  public getConnectionsByUserId(userId: string): WebSocket[] {
+    const connections: WebSocket[] = [];
+    for (const [ws, user] of this.wsToUserId.entries()) {
+      if (user.id === userId) {
+        connections.push(ws);
+      }
+    }
+    return connections;
+  }
+
   public setUserByConnection(ws: WebSocket, user: User) {
     this.wsToUserId.set(ws, user);
   }

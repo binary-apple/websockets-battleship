@@ -6,6 +6,7 @@ import { WssResponse } from './types';
 import { ConnectionService } from './services/connection_service';
 import { CreateRoom } from './commands/create_room';
 import { UpdateRoom } from './commands/update_room';
+import { AddUserToRoom } from './commands/add_user_to_room';
 
 export const wss = (port = 3000) => {
   // const clients = new Map();
@@ -14,6 +15,7 @@ export const wss = (port = 3000) => {
   CommandsHandler.registerCommand('reg', new Reg());
   CommandsHandler.registerCommand('create_room', new CreateRoom());
   CommandsHandler.registerCommand('update_room', new UpdateRoom());
+  CommandsHandler.registerCommand('add_user_to_room', new AddUserToRoom());
   const connectionService = ConnectionService.getInstance();
 
   wss.on('connection', function connection(ws: WebSocket) {
